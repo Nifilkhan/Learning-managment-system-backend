@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
 
 export const addCourse = async(req,res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         // console.log(req.file)
 
         const {title,category,description,price} = req.body;
@@ -40,10 +40,10 @@ export const addCourse = async(req,res) => {
             // video:videoUrls,
         });
 
-        console.log('course adding',newCourse)
+        // console.log('course adding',newCourse)
 
         await newCourse.save();
-        console.log('cousre added sucessfully',newCourse);
+        // console.log('cousre added sucessfully',newCourse);
 
         res.json({message:'Course created succesfully', course:newCourse})
         console.log(newCourse._id);
