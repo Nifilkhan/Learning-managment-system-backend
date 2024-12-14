@@ -5,9 +5,6 @@ export const courseSchema = mongoose.Schema({
     description:{type:String,required:true},
     category:{type:mongoose.Schema.Types.ObjectId, ref:'Category',required:true},
     price:{type:String,required:true},
-    coverImage:{type:String, required:true},
-    video:[String],
-    status: { type: String, enum: ['Draft', 'Published'], default: 'Draft' }
     }, {
         timestamps:true
     })

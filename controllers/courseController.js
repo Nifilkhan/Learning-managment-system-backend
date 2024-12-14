@@ -12,18 +12,18 @@ import mongoose from 'mongoose';
 export const addCourse = async(req,res) => {
     try {
         console.log(req.body);
-        console.log(req.file)
+        // console.log(req.file)
 
         const {title,category,description,price} = req.body;
 
-        const coverImageUrl= req.files['coverImage'] ? req.files['coverImage']?.[0].location: null;
-        const videoUrls= req.files['videos']?req.files['videos']?.map(file => file.location): [];
+        // const coverImageUrl= req.files['coverImage'] ? req.files['coverImage']?.[0].location: null;
+        // const videoUrls= req.files['videos']?req.files['videos']?.map(file => file.location): [];
         
-        console.log(req.files,'fiels upload')
+        // console.log(req.files,'fiels upload')
 
-        if(!coverImageUrl || videoUrls?.length === 0) {
-            return res.status(400).json({message:'Cover image and atleast one video are required'});
-        }
+        // if(!coverImageUrl || videoUrls?.length === 0) {
+        //     return res.status(400).json({message:'Cover image and atleast one video are required'});
+        // }
 
         const courseCategory = await Category.findById(category);
 
@@ -36,8 +36,8 @@ export const addCourse = async(req,res) => {
             description,
             category,
             price,
-            coverImage:coverImageUrl,
-            video:videoUrls,
+            // coverImage:coverImageUrl,
+            // video:videoUrls,
         });
 
         console.log('course adding',newCourse)
@@ -46,6 +46,8 @@ export const addCourse = async(req,res) => {
         console.log('cousre added sucessfully',newCourse);
 
         res.json({message:'Course created succesfully', course:newCourse})
+        console.log(newCourse._id);
+        
     } catch(error) {
         console.log(error);
         res.status(500).json({ error: 'Error adding the course.' });
