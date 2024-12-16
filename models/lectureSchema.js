@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 
 export const lectureSchema = mongoose.Schema({
-    sectionId:{type:mongoose.Schema.Types.ObjectId, ref:'Section',required:true},
     title:{type:String,required:true},
-},{timestamps:true})
+    contentType: { type: String, enum: ['video', 'article'], required: true },  // Content type (video or article)
+    videoUrl:{type:String,required:function() {
+        return this.contentType === 'video'
+    }},
+    articleContent:{type:String,required:function() {
+        return this.contentType === 'article'
+    }}
+})
 
-const Lecture = mongoose.model('Lecture',lectureSchema)
+const Lecture = mongoose.model('Lecture',lectureSchema);
 export default Lecture;

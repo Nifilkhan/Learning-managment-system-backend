@@ -8,6 +8,7 @@ import courseRouts from "./routes/courseRoutes.js";
 import sectionRoute from './routes/sectionRoute.js'
 import http from 'http';
 import { Server as socketIo } from "socket.io";
+import lecture from "./routes/lecture.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRouts);
 app.use("/api/section",sectionRoute);
+app.use("/api/lecture",lecture);
 
 io.on('connection',(socket) => {
   console.log('A new user connected',socket.id);
