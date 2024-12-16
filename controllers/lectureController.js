@@ -14,12 +14,18 @@ export const addLecture = async(req, res) => {
     }
 
     for (const lecture of lectures) {        
-        const newLecture = new Lecture( lecture )
-        section.lecture.push(newLecture)
+        const newLecture = new Lecture({
+          title:lecture.title,
+          contentType:lecture.contentType,
+          videoUrl: lecture.contentType === 'video' ? lecture.videoUrl : '',
+          articleContent: lecture.contentType === 'article' ? lecture.articleContent : ''
+        })
+        // section.lecture.push(newLecture)
         console.log("created lecture",newLecture);
+        await newLecture.save();
+        section.lecture.push(newLecture._id); // Push the lecture ID into the section
     }
     
-
     await section.save();
     console.log("section that including the lecture data",section)
     res.status(200).json({message:'Lecture added succesfully',section})
