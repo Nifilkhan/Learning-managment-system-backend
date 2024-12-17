@@ -12,19 +12,10 @@ export const addLecture = async(req, res) => {
     if(!section) {
         return res.status(404).json({message:'Section id not found'})
     }
-
-    for (const lecture of lectures) {        
-        const newLecture = new Lecture({
-          title:lecture.title,
-          contentType:lecture.contentType,
-          videoUrl: lecture.contentType === 'video' ? lecture.videoUrl : '',
-          articleContent: lecture.contentType === 'article' ? lecture.articleContent : ''
-        })
-        // section.lecture.push(newLecture)
+        const newLecture = new Lecture(lectures)
         console.log("created lecture",newLecture);
         await newLecture.save();
-        section.lecture.push(newLecture._id); // Push the lecture ID into the section
-    }
+        section.lecture.push(newLecture._id);
     
     await section.save();
     console.log("section that including the lecture data",section)
