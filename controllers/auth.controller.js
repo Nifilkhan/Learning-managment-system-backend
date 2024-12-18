@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from 'bcryptjs'
 import { otpValidationSchema, signinSchema, signupSchema } from "../validations/validation.js";
 import { generateOTP } from "../utils/otp.js";
-import transport from "../middleware/sendMail.js";
+import transport from "../middleware/send.mail.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 
@@ -94,8 +94,6 @@ export const signin = async(req,res) => {
         }
 
         if(email === process.env.STATIC_ADMIN_EMAIL && password === process.env.STATIC_ADMIN_PASSWORD) {
-            // console.log(email);
-            // console.log(password);
             res.cookie('adminLoggedIn', true, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Secure cookie in production

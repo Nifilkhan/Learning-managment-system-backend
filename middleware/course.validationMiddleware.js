@@ -15,3 +15,6 @@ export const validateCourseExists = async(req,res,next) => {
     }
 }
 
+
+
+

@@ -1,4 +1,4 @@
-import Category from "../models/categorySchema.js";
+import Category from "../models/category.model.js";
 
 
 export const createCategory = async(req,res)=> {
@@ -24,7 +24,9 @@ export const createCategory = async(req,res)=> {
 export const getCategory = async(req,res) => {
     try {
         const categories = await Category.find();
-        res.json({categories})
+        console.log(categories);
+        
+        return res.status(200).json({message:'selected categorie',categories})
     } catch (error) {
         console.log(error)
         throw new error('Error occurred while retrieving categories')

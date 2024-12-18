@@ -1,6 +1,6 @@
 import Section from "../models/sectionSchema.js";
 import Course from "../models/courseModel.js";
-import { getSectionsByCourse } from "../services/section.service.js";
+import { getCourseById, getSectionsByCourse } from "../services/section.service.js";
 
 //adding section to a course
 
@@ -11,14 +11,8 @@ export const addSection = async (req, res) => {
 
     console.log("Received courseId:", courseId); // Debugging log
 
-    if (!title || title.trim().length < 3) {
-      return res.status(400).json({
-        message: "Title must be at least 3 characters long",
-      });
-    }
-
     // Validate courseId
-    const course = await Course.findById(courseId);
+    const course = await getCourseById(courseId);
     console.log(course);
 
     if (!course) {
@@ -47,9 +41,10 @@ export const getSection = async (req, res) => {
   try {
     const { courseId } = req.params;
 
-    console.log("course for getting the section based on it", courseId);
+    // console.log("section for the spepcific course based on the courseId", courseId);
 
-    const course = await Course.findById(courseId);
+    const course = await getCourseById(courseId);
+    // console.log("course id found for get the specific course sections",course)
 
     if (!course) {
       return res
@@ -58,6 +53,7 @@ export const getSection = async (req, res) => {
     }
 
     const sections = await getSectionsByCourse(courseId);
+    console.log("sections for a course",sections)
     if (sections.length === 0) {
       return res
         .status(404)
@@ -77,7 +73,7 @@ export const deleteSection = async (req, res) => {
   try {
     const { courseId } = req.params;
 
-    const course = await Course.findById(courseId);
+    const course = await getCourseById(courseId);
 
     if (!course) {
       return res.status(404).json({ message: "Course id not found " });

@@ -3,12 +3,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDb from "./config/db.js";
 import dotenv from "dotenv";
-import authRoutes from "../LMS_Backend/routes/authRoutes.js";
-import courseRouts from "./routes/courseRoutes.js";
-import sectionRoute from './routes/sectionRoute.js'
+import authRoutes from "../LMS_Backend/routes/auth.routes.js";
+import courseRouts from "./routes/course.routes.js";
+import sectionRoute from './routes/section.routes.js'
 import http from 'http';
 import { Server as socketIo } from "socket.io";
-import lecture from "./routes/lecture.js";
+import lecture from "./routes/lecture.routes.js";
 
 const app = express();
 

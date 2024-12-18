@@ -1,6 +1,5 @@
 import express from "express";
-import { addSection, deleteSection, getSection } from "../controllers/sectionController.js";
-import { validateCourseExists } from "../middleware/courseValidationMiddleware.js";
+import { addSection, deleteSection, getSection } from "../controllers/section.controller.js";
 
 const router = express.Router();
 
