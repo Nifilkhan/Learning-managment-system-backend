@@ -16,8 +16,7 @@ export const authenticatedUser = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
-    res.status(401).json({ message: "Invalid or expired token." });
+    res.status(500).json({ message: "Internal server error"});
   }
 };
 

@@ -1,5 +1,7 @@
 import express from "express";
 import { addSection, deleteSection, getSection } from "../controllers/section.controller.js";
+import { validateSection } from "../middleware/validating.middleware.js";
+import { addSectionSchema } from "../validations/course.validations.js";
 
 const router = express.Router();
 

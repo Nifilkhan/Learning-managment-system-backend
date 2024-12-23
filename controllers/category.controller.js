@@ -16,19 +16,15 @@ export const createCategory = async(req,res)=> {
 
         return res.status(200).json({message:'Category added succesfully',newCategory})
     } catch (error) {
-        console.log(error);
         throw new error('Error occurred while creating the category')
     }
 }
 
 export const getCategory = async(req,res) => {
     try {
-        const categories = await Category.find();
-        console.log(categories);
-        
+        const categories = await Category.find();        
         return res.status(200).json({message:'selected categorie',categories})
     } catch (error) {
-        console.log(error)
         throw new error('Error occurred while retrieving categories')
     }
 }

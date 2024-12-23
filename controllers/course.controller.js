@@ -28,9 +28,7 @@ export const addCourse = async (req, res) => {
     await newCourse.save();
 
     res.json({ message: "Course created succesfully", course: newCourse });
-    console.log(newCourse._id);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Error adding the course." });
   }
 };
@@ -48,7 +46,6 @@ export const getCourse = async (req, res) => {
     }
     res.status(200).json({ message: "Course found by id", course });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "error while getting the course" });
   }
 };
@@ -70,7 +67,6 @@ export const getAllCourses = async (req, res) => {
     }
     res.status(200).json({ message: "All course found by ", courses });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "error while getting the course" });
   }
 };
@@ -111,7 +107,6 @@ export const editCourse = async (req, res) => {
       .status(200)
       .json({ message: "Course updated successfully", updateCourse });
   } catch (error) {
-    console.log(error);
     res
       .status(402)
       .json({ message: "Error happend while updating the course" });
@@ -134,7 +129,6 @@ export const deleteCourse = async (req, res) => {
       .status(200)
       .json({ message: "course deleted successfully", deletedCourse });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "error while deleting the course" });
   }
 };

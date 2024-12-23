@@ -49,10 +49,22 @@ export const getCourseById = async(id) => {
   }
 }
 
-export const deleteSection = async (sectionId) => {
+export const softDeleteSection = async (courseId,sectionId) => {
   try {
-    await Section.findByIdAndUpdate(sectionId, { isDeleted: true });
+    const section = await Section.findOne({
+      courseId,
+      _id:sectionId,
+      isDeleted:false
+    });
+
+    if(!section) {
+      return null;
+    }
+
+    await Section.findByIdAndUpdate(sectionId,{isDeleted:true});
+    return section;
   } catch (error) {
-    return null;
+    console.error("Error in deleteSectionService:", error);
+    throw error;
   }
 };

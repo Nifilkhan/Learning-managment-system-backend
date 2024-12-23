@@ -39,7 +39,6 @@ export const signup = async(req,res) => {
         newUser.verificationCode = otp;
         newUser.otpExpiration = expirationTime;
 
-        console.log(otp);
        await transport.sendMail({
             from:process.env.OTP_SENDING_EMAIL,
             to:newUser.email,
@@ -49,8 +48,7 @@ export const signup = async(req,res) => {
         await newUser.save();
         res.status(201).json({message: "Signup completed, Verify the otp",newUser});
     }catch(err) {
-        console.log(err)
-    }
+        throw new Error('Internal server error')    }
 }
 
 
@@ -78,7 +76,7 @@ export const verifyOtp = async(req,res) => {
         await user.save();
         res.status(200).json({ message: 'OTP verified successfully' });
     } catch (error) {
-        console.log(error)
+        throw new Error('Internal server error')
     }
 }
 
@@ -134,7 +132,6 @@ export const signin = async(req,res) => {
     })
         res.status(200).json({message:'User loggedin succesfully',role:user.roles})
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: 'Server error' });
     }
 }
@@ -144,7 +141,6 @@ export const GetAllUsers = async(req,res) => {
         const VerifiedUsers = await User.find()
         res.status(200).json({message:'All verified users found ' , VerifiedUsers})
     } catch (error) {
-        console.log(error)
         res.status(500).json({message:'Internal server error'})
     }
 }
