@@ -1,6 +1,7 @@
 import Category from "../models/category.model.js";
 import Course from "../models/courseModel.js";
 import Section from "../models/sectionSchema.js";
+import mongoose from "mongoose";
 
 
 /**
@@ -8,14 +9,20 @@ import Section from "../models/sectionSchema.js";
  * @param {*} courseId 
  * @returns 
  */
-export const getSectionsByCourse = async(courseId) => {
+export const getSectionsByCourse = async ({ courseId, isDeleted }) => {
   try {
-    const section = await Section.find({courseId});
-    return section;
+    // Ensure courseId is treated as ObjectId
+    const sections = await Section.find({
+      courseId: new mongoose.Types.ObjectId(courseId),
+      isDeleted: isDeleted !== undefined ? isDeleted : false,
+    });
+    return sections;
   } catch (error) {
+    console.error("Error in getSectionsByCourse:", error.message);
     return null;
   }
 };
+
 
 
 /**
@@ -61,10 +68,11 @@ export const softDeleteSection = async (courseId,sectionId) => {
       return null;
     }
 
-    await Section.findByIdAndUpdate(sectionId,{isDeleted:true});
-    return section;
+  const updateSection =  await Section.findByIdAndUpdate(sectionId,{isDeleted:true},{new:true});
+    return updateSection;
+    
   } catch (error) {
-    console.error("Error in deleteSectionService:", error);
+    console.error("Error in softDelectsection service:", error);
     throw error;
   }
 };
