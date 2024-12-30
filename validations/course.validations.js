@@ -14,3 +14,18 @@ export const addSectionSchema = Joi.object({
   title: Joi.string().min(3).required()                
 });
 
+export const addLectureSchema = Joi.object({
+  title:Joi.string().min(3).max(100).required(),
+  contentType:Joi.string().valid('video','article').required(),
+  video:Joi.when('contentType' , {
+    is:'video',
+    then:Joi.string().uri().required(),
+    otherwise:Joi.forbidden(),
+  }),
+  articleContent:Joi.when('contentType', {
+    is:'article',
+    then:Joi.string().required(),
+    otherwise:Joi.forbidden(),
+  })
+})
+

@@ -9,7 +9,7 @@ export const lectureSchema = mongoose.Schema({
     articleContent:{type:String,required:function() {
         return this.contentType === 'article'
     }},
-})
+},{timestamps:true})
 
 const Lecture = mongoose.model('Lecture',lectureSchema);
 export default Lecture;

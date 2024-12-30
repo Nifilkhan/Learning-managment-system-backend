@@ -1,8 +1,10 @@
 import express from "express";
-import { addLecture } from "../controllers/lecture.controller.js";
+import { addLecture, getPreSignedUrl } from "../controllers/lecture.controller.js";
+import { validateLecture } from "../middleware/validating.middleware.js";
 
 const router = express.Router();
 
-router.post('/addLecture/:sectionId',addLecture);
+router.post('/sections/:sectionId/addLecture',validateLecture,addLecture);
+router.get('/presigned-url',getPreSignedUrl);
 
 export default router;
