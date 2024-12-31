@@ -1,5 +1,4 @@
 import express from "express";
-import upload from "../config/uploads.js";
 import {
   addCourse,
   deleteCourse,
