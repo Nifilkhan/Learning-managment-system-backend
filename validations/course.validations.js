@@ -14,6 +14,10 @@ export const addSectionSchema = Joi.object({
   title: Joi.string().min(3).required()                
 });
 
+
+/**
+ * schema to validate courseId and title for the lecture
+ */
 export const addLectureSchema = Joi.object({
   title:Joi.string().min(3).max(100).required(),
   contentType:Joi.string().valid('video','article').required(),
