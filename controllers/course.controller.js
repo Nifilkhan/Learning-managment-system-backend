@@ -27,6 +27,8 @@ export const addCourse = async (req, res) => {
 
     await newCourse.save();
 
+    console.log('new course',newCourse);
+    
     res.json({ message: "Course created succesfully", course: newCourse });
   } catch (error) {
     res.status(500).json({ error: "Error adding the course." });
@@ -56,11 +58,8 @@ export const getCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    const { category } = req.query;
-
-    const query = category ? { category } : {};
-
-    const courses = await Course.find(query).populate("category", "name");
+    const courses = await Course.find({ isDeleted: false });
+    console.log('courses found:',courses);
 
     if (!courses) {
       return res.status(402).json({ message: "Not found" });

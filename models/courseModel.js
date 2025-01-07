@@ -10,7 +10,9 @@ export const courseSchema = mongoose.Schema(
       required: true,
     },
     price: { type: String, required: true },
-    isDeleted: { type: Boolean },
+    isDeleted: { type: Boolean,default: false  },
+    status:{type:String,enum:['draft','published'],default:'draft'},
+    section:[{type:mongoose.Schema.Types.ObjectId,ref:'Section'}]
   },
   {
     timestamps: true,

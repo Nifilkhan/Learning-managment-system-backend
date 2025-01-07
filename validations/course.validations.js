@@ -21,7 +21,7 @@ export const addSectionSchema = Joi.object({
 export const addLectureSchema = Joi.object({
   title:Joi.string().min(3).max(100).required(),
   contentType:Joi.string().valid('video','article').required(),
-  video:Joi.when('contentType' , {
+  videoUrl:Joi.when('contentType' , {
     is:'video',
     then:Joi.string().uri().required(),
     otherwise:Joi.forbidden(),
