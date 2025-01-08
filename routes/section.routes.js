@@ -6,7 +6,7 @@ import { addSectionSchema } from "../validations/course.validations.js";
 const router = express.Router();
 
 router.post('/addSection/:courseId', addSection);
-router.get('/get-section/:courseId',getSection)
+router.get('/get-section/:courseId',getSection);
 router.delete('/course/:courseId/section/:sectionId',deleteSection)
 router.put('/course/:courseId/section/:sectionId', editSection);
 

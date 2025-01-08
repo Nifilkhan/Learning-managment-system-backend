@@ -138,8 +138,10 @@ export const signin = async(req,res) => {
 
 export const GetAllUsers = async(req,res) => {
     try {
-        const VerifiedUsers = await User.find()
-        res.status(200).json({message:'All verified users found ' , VerifiedUsers})
+        const VerifiedUsers = await User.find({ verified:true });
+        // console.log('verified users list:',VerifiedUsers);
+        
+        res.status(200).json({message:'All verified users found ' , VerifiedUsers, totalCount : VerifiedUsers.length})
     } catch (error) {
         res.status(500).json({message:'Internal server error'})
     }
