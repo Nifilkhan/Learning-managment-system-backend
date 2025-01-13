@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/sections/:sectionId/addLecture',addLecture);
 router.put('/:lectureId/editLecture',editLecture);
 router.get('getLecture/:lectureId',getLecture);
-router.delete('/:lectureId',deleteLecture);
+router.delete('/delete-lecture/:lectureId',deleteLecture);
 router.get('/presigned-url',getPreSignedUrl);
 
 export default router;

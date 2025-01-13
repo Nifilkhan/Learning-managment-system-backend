@@ -23,11 +23,15 @@ export const generatePresignedUrl = async (fileName, fileType, courseId) => {
             ACL: "public-read",
         };
 
+
+
         console.log("Generating presigned URL with params:", params);
         // console.log("put object command",command);
         
         const preSignedUrl = await getSignedUrl(s3,new PutObjectCommand(params),{ expiresIn: 60 });
         console.log("returned url",preSignedUrl);
+        console.log("video url",videoUrl);
+        
         
         return {videoUrl,preSignedUrl};
     } catch (error) {

@@ -3,6 +3,7 @@ import Course from "../models/courseModel.js";
 import { getMonthlySaleData } from "../pipelines/courseAggregation.js";
 import mongoose from "mongoose";
 import { getCategoryById, getCourseById } from "../services/section.service.js";
+import { getAllCoursesService } from "../services/allCourses.service.js";
 
 /**
  * Add a new course
@@ -27,8 +28,8 @@ export const addCourse = async (req, res) => {
 
     await newCourse.save();
 
-    console.log('new course',newCourse);
-    
+    // console.log('new course',newCourse);
+
     res.json({ message: "Course created succesfully", course: newCourse });
   } catch (error) {
     res.status(500).json({ error: "Error adding the course." });
@@ -58,13 +59,35 @@ export const getCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find({ isDeleted: false });
-    console.log('courses found:',courses);
+    const { limit, offset, search, category } = req.query;
 
-    if (!courses) {
-      return res.status(402).json({ message: "Not found" });
-    }
-    res.status(200).json({ message: "All course found by ", courses });
+    console.log(req.query);
+
+    const { courses, totalCount } = await getAllCoursesService({
+      category,
+      search,
+      limit,
+      offset,
+    });
+
+    console.log(totalCount);
+    console.log(courses)
+
+    const parsedLimit = parseInt(limit,10);
+    const parsedOffset = parseInt(offset,0);
+
+    const currentPage = Math.floor(parsedOffset / parsedLimit) + 1;
+    const totalPages = Math.ceil(totalCount / parsedLimit);
+
+    res
+      .status(200)
+      .json({
+        message: "All course found by ",
+        courses,
+        totalCount,
+        currentPage,
+        totalPages,
+      });
   } catch (error) {
     res.status(500).json({ message: "error while getting the course" });
   }
@@ -90,7 +113,7 @@ export const editCourse = async (req, res) => {
       title: title || course.title,
       description: description || course.description,
       price: price || course.price,
-      category: mongoose.isValidObjectId(category) ? category : course.category, // Ensure ObjectId or fallback
+      category: mongoose.isValidObjectId(category) ? category : course.category,
     };
 
     const updateCourse = await Course.findByIdAndUpdate(

@@ -45,3 +45,20 @@ export const softDeleteLecture = async(lectureId) => {
       throw new error('Error in soft delete service')
    }
 }
+
+export const getLectureService = async(lectureId) => {
+   try {
+      const lecture = await Lecture.finById(lectureId);
+      return lecture;
+   } catch (error) {
+      throw new error('error occured while getting the id of the lecture')
+   }
+}
+
+export const editLectureService = async(lectureId,updateData) => {
+   return await Lecture.findByIdAndUpdate(
+      lectureId,
+      updateData,
+      {new:true,runValidators:true}
+   )
+}

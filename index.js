@@ -12,9 +12,9 @@ import lecture from "./routes/lecture.routes.js";
 
 const app = express();
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
-const io = new socketIo(server)
+// const io = new socketIo(server)
 
 dotenv.config();
 
@@ -29,20 +29,20 @@ app.use("/api/courses", courseRouts);
 app.use("/api/section",sectionRoute);
 app.use("/api/lecture",lecture);
 
-io.on('connection',(socket) => {
-  console.log('A new user connected',socket.id);
+// io.on('connection',(socket) => {
+//   console.log('A new user connected',socket.id);
 
-  socket.on('send_message',(message) => {
-    console.log('Recived message',message);
+//   socket.on('send_message',(message) => {
+//     console.log('Recived message',message);
 
-    io.emit('recive_message',message);
-  });
+//     io.emit('recive_message',message);
+//   });
 
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
+//   socket.on('disconnect', () => {
+//     console.log('A user disconnected');
     
-  })
-})
+//   })
+// })
 
 connectDb();
 

@@ -5,6 +5,7 @@ import { generateOTP } from "../utils/otp.js";
 import transport from "../middleware/send.mail.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
+import { getUserCount } from "../services/userCount.service.js";
 
 
 dotenv.config();
@@ -138,10 +139,9 @@ export const signin = async(req,res) => {
 
 export const GetAllUsers = async(req,res) => {
     try {
-        const VerifiedUsers = await User.find({ verified:true });
-        // console.log('verified users list:',VerifiedUsers);
+        const VerifiedUsers = await getUserCount();
         
-        res.status(200).json({message:'All verified users found ' , VerifiedUsers, totalCount : VerifiedUsers.length})
+        res.status(200).json({message:'All verified users found ' , totalCount:VerifiedUsers})
     } catch (error) {
         res.status(500).json({message:'Internal server error'})
     }

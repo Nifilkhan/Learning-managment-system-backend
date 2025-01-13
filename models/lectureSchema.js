@@ -9,6 +9,7 @@ export const lectureSchema = mongoose.Schema({
     articleContent:{type:String,required:function() {
         return this.contentType === 'article'
     }},
+    descripiton:{type:String},
     isDeleted: { type: Boolean,default:false },
 },{timestamps:true})
 

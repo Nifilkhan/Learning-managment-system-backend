@@ -1,11 +1,13 @@
 import Lecture from "../models/lectureSchema.js";
-import { addLectureToSection, softDeleteLecture } from "../services/lecture.service.js";
+import { addLectureToSection, editLectureService, getLectureService, softDeleteLecture } from "../services/lecture.service.js";
 import { generatePresignedUrl } from "../config/uploads.js";
 
 export const getPreSignedUrl = async (req, res) => {
   try {
     const { fileName, fileType, courseId } = req.query;
-    console.log(req.query);
+    console.log('File name:',fileName);
+    console.log('File type:',fileType);
+    console.log('File courseId:',courseId);
 
     if (!fileName || !fileType || !courseId) {
       return res
@@ -36,7 +38,7 @@ export const getPreSignedUrl = async (req, res) => {
 export const addLecture = async (req, res) => {
   try {
     const { sectionId } = req.params;
-    const { title, contentType, videoUrl, articleContent } = req.body;
+    const { title, contentType, videoUrl, articleContent,descripiton } = req.body;
     console.log(req.body);
 
     console.log("Received request to add lecture with data:", req.body);
@@ -46,6 +48,7 @@ export const addLecture = async (req, res) => {
       contentType,
       videoUrl,
       articleContent,
+      descripiton,
     });
 
     const savedLecture = await newLecture.save();
@@ -67,7 +70,7 @@ export const editLecture = async(req,res) => {
     const {title,contentType,videoUrl,articleContent} = req.body;
     console.log("Received request to edit lecture with data:", req.body);
 
-    const updatedLecture = await Lecture.findByIdAndUpdate(
+    const updatedLecture = await editLectureService(
       lectureId,
       {
         title,
@@ -75,7 +78,6 @@ export const editLecture = async(req,res) => {
         videoUrl,
         articleContent
       },
-      { new: true,runValidators:true }
     );
 
     if(!updatedLecture){
@@ -92,7 +94,7 @@ export const getLecture = async(req,res) => {
   try {
     const {lectureId} = req.params;
 
-    const lecture = await Lecture.findById(lectureId);
+    const lecture = await getLectureService(lectureId);
 
     if(!lecture) {
       return res.status(404).json({message:'Lecture not found'})
