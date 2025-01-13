@@ -18,7 +18,7 @@ export const getAllCoursesService = async ({
 
   // console.log(pipeline);
   if (category & mongoose.Types.ObjectId.isValid(category)) {
-    pipeline.push({ $match: { category: mongoose.Types.ObjectId.isValid(category) } });
+    pipeline.push({ $match: { category: mongoose.Types.ObjectId(category) } });
   }
 
   // console.log(category);
@@ -54,5 +54,6 @@ export const getAllCoursesService = async ({
   } catch (error) {
     console.error("Error in getAllCoursesService:", error.message);
     throw new Error("Error while fetching courses");
+    return {courses:[],totalCount:[]}
   }
 };

@@ -4,6 +4,7 @@ import { getMonthlySaleData } from "../pipelines/courseAggregation.js";
 import mongoose from "mongoose";
 import { getCategoryById, getCourseById } from "../services/section.service.js";
 import { getAllCoursesService } from "../services/allCourses.service.js";
+import { getLatestCourseService } from "../services/latestCourses.service.js";
 
 /**
  * Add a new course
@@ -73,8 +74,8 @@ export const getAllCourses = async (req, res) => {
     console.log(totalCount);
     console.log(courses)
 
-    const parsedLimit = parseInt(limit,10);
-    const parsedOffset = parseInt(offset,0);
+    const parsedLimit = parseInt(limit,10) || 10;
+    const parsedOffset = parseInt(offset,0) || 0;
 
     const currentPage = Math.floor(parsedOffset / parsedLimit) + 1;
     const totalPages = Math.ceil(totalCount / parsedLimit);
@@ -160,11 +161,21 @@ export const deleteCourse = async (req, res) => {
  */
 export const monthlySale = async (req, res) => {
   try {
-    const data = await getMonthlySaleData;
-    res.json({ message: "No right now data available", data });
+    const monthlySales = await getMonthlySaleData;
+    res.json({ message: "No right now data available", monthlySales });
   } catch (error) {
     console.log(error);
   }
 };
+
+export const getLatestCourses = async(req,res) => {
+  try {
+    const latestCourses = await getLatestCourseService();
+
+    res.status(200).json({message:'Latest courses',latestCourses})
+  } catch (error) {
+    res.status(500).json({message:'error occured in latest course controller'})
+  }
+}
 
 export default { addCourse, getCourse, getAllCourses };

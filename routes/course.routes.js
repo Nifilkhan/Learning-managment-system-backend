@@ -5,6 +5,7 @@ import {
   editCourse,
   getAllCourses,
   getCourse,
+  getLatestCourses,
   monthlySale,
 } from "../controllers/course.controller.js";
 // import adminMiddleware from "../middleware/adminMiddleware.js";
@@ -29,5 +30,8 @@ router.get('/monthly-sale',monthlySale);
 //category
 router.post('/add-category',createCategory)
 router.get('/get-category',getCategory)
+
+//latest course 
+router.get('/latest-courses',getLatestCourses)
 
 export default router;
