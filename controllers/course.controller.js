@@ -13,6 +13,11 @@ import { getLatestCourseService } from "../services/latestCourses.service.js";
 export const addCourse = async (req, res) => {
   try {
     const { title, category, description, price } = req.body;
+    const thumbnailImage= req.body.thumbnail|| null;
+    console.log('thumbnail image for the course',thumbnailImage)
+    if(!thumbnailImage) {
+      return res.status(402).json({meessgae:'Thumbnail image is not provided'})
+    }
 
     const courseCategory = await getCategoryById(category);
 
@@ -25,6 +30,7 @@ export const addCourse = async (req, res) => {
       description,
       category,
       price,
+      thumbnail:thumbnailImage
     });
 
     await newCourse.save();
@@ -62,7 +68,7 @@ export const getAllCourses = async (req, res) => {
   try {
     const { limit, offset, search, category } = req.query;
 
-    console.log(req.query);
+    // console.log(req.query);
 
     const { courses, totalCount } = await getAllCoursesService({
       category,
@@ -71,8 +77,8 @@ export const getAllCourses = async (req, res) => {
       offset,
     });
 
-    console.log(totalCount);
-    console.log(courses)
+    // console.log(totalCount);
+    // console.log(courses)
 
     const parsedLimit = parseInt(limit,10) || 10;
     const parsedOffset = parseInt(offset,0) || 0;

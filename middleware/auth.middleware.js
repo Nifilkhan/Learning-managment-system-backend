@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const authenticatedUser = (req, res, next) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.cookies.Authorization;
 
     if (!token) {
       return res
@@ -10,13 +10,13 @@ export const authenticatedUser = (req, res, next) => {
         .json({ message: "Access denided,No token provided" });
     }
 
-    const decode = jwt.verify(token.process.env.JWT_SECRET);
+    const decode = jwt.verify(token,process.env.JWT_SECRET);
 
     req.user = decode;
 
     next();
   } catch (error) {
-    res.status(500).json({ message: "Internal server error"});
+    res.status(500).json({ message: "Internal server error",error:error.message});
   }
 };
 

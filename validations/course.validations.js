@@ -6,6 +6,7 @@ export const addCourseSchema = Joi.object({
     category: Joi.string().required(),
     description: Joi.string().min(10).required(),
     price: Joi.number().min(0).required(),
+    thumbnail: Joi.string().required()
   });
 
 

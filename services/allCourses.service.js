@@ -47,8 +47,8 @@ export const getAllCoursesService = async ({
     const courses = result?.data || [];
     const totalCount = result?.totalCount?.[0]?.count || 0;
 
-    console.log(courses);
-    console.log(totalCount)
+    // console.log(courses);
+    // console.log(totalCount)
 
     return { courses, totalCount };
   } catch (error) {

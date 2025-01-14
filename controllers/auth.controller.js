@@ -93,6 +93,16 @@ export const signin = async(req,res) => {
         }
 
         if(email === process.env.STATIC_ADMIN_EMAIL && password === process.env.STATIC_ADMIN_PASSWORD) {
+            const adminToken = jwt.sign(
+                {
+                    role: 'admin', // Add any additional payload data as needed
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: '4h', // Set token expiration
+                }
+            );
+            console.log('Admin token',adminToken)
             res.cookie('adminLoggedIn', true, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Secure cookie in production
@@ -131,9 +141,37 @@ export const signin = async(req,res) => {
         maxAge: 4 * 60 * 60 * 1000,
         sameSite: 'Strict', // Restricts the cookie to same-site requests (prevents CSRF attacks)
     })
-        res.status(200).json({message:'User loggedin succesfully',role:user.roles})
+
+    const decode= jwt.verify(token,process.env.JWT_SECRET)
+    console.log(decode.userId)
+    console.log(decode.role)
+        res.status(200).json({message:'User loggedin succesfully',user:{
+            userId:decode.userId,
+            role:decode.role
+        }})
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+    }
+}
+
+export const logout = async(req,res) => {
+    try {
+        res.clearCookie('Authorization',{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === 'production',
+            sameSite:'strict'
+        })
+
+        res.clearCookie('adminLoggedIn',{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === 'production',
+            sameSite:'strict'
+        })
+
+        return res.status(200).json({message:'logged out succesfully'})
+        
+    } catch (error) {
+        res.status(500).json({message:'Error occured during logout'})
     }
 }
 

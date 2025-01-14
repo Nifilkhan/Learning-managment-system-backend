@@ -13,26 +13,17 @@ const s3 = new S3({
 });
 
 // Function to generate a presigned URL for file upload
-export const generatePresignedUrl = async (fileName, fileType, courseId) => {
+export const generatePresignedUrl = async (fileName, fileType, courseId,fileCategory) => {
     try {
-        const videoUrl = `uploads/${courseId}/${Date.now()}/videos/${fileName}`;
+        const folder = fileCategory === 'video' ? 'videoUrl' : 'thumbnail';
+        const videoUrl = `uploads/${courseId}/${Date.now()}/${folder}/${fileName}`;
         const params = {
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: videoUrl,
             ContentType: fileType,
             ACL: "public-read",
-        };
-
-
-
-        console.log("Generating presigned URL with params:", params);
-        // console.log("put object command",command);
-        
-        const preSignedUrl = await getSignedUrl(s3,new PutObjectCommand(params),{ expiresIn: 60 });
-        console.log("returned url",preSignedUrl);
-        console.log("video url",videoUrl);
-        
-        
+        };  
+        const preSignedUrl = await getSignedUrl(s3,new PutObjectCommand(params),{ expiresIn: 200 });
         return {videoUrl,preSignedUrl};
     } catch (error) {
         console.error("Error generating presigned URL:", error);

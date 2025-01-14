@@ -4,15 +4,15 @@ import { generatePresignedUrl } from "../config/uploads.js";
 
 export const getPreSignedUrl = async (req, res) => {
   try {
-    const { fileName, fileType, courseId } = req.query;
+    const { fileName, fileType, courseId,fileCategory } = req.query;
     console.log('File name:',fileName);
     console.log('File type:',fileType);
     console.log('File courseId:',courseId);
 
-    if (!fileName || !fileType || !courseId) {
+    if (!fileName || !fileType || !courseId || !fileCategory) {
       return res
         .status(400)
-        .json({ message: "File name, type, and courseId are required" });
+        .json({ message: "File name, type,file category and courseId are required" });
     }
 
     console.log("Received request for presigned URL with:", req.query);
@@ -20,7 +20,8 @@ export const getPreSignedUrl = async (req, res) => {
     const { preSignedUrl, videoUrl } = await generatePresignedUrl(
       fileName,
       fileType,
-      courseId
+      courseId,
+      fileCategory
     );
     console.log(preSignedUrl, "presigned url");
 

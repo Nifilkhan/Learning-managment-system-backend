@@ -9,8 +9,9 @@ export const courseSchema = mongoose.Schema(
       ref: "Category",
       required: true,
     },
-    price: { type: String, required: true },
+    price: { type: Number, required: true },
     isDeleted: { type: Boolean,default: false  },
+    thumbnail:{type:String},
     status:{type:String,enum:['draft','published'],default:'draft'},
     section:[{type:mongoose.Schema.Types.ObjectId,ref:'Section'}]
   },
