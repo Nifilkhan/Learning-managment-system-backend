@@ -70,7 +70,7 @@ export const getAllCourses = async (req, res) => {
 
     // console.log(req.query);
 
-    const { courses, totalCount } = await getAllCoursesService({
+    const { populatedCourses, totalCount } = await getAllCoursesService({
       category,
       search,
       limit,
@@ -78,7 +78,7 @@ export const getAllCourses = async (req, res) => {
     });
 
     // console.log(totalCount);
-    // console.log(courses)
+    console.log(populatedCourses)
 
     const parsedLimit = parseInt(limit,10) || 10;
     const parsedOffset = parseInt(offset,0) || 0;
@@ -90,7 +90,7 @@ export const getAllCourses = async (req, res) => {
       .status(200)
       .json({
         message: "All course found by ",
-        courses,
+        courses:populatedCourses,
         totalCount,
         currentPage,
         totalPages,
@@ -106,7 +106,7 @@ export const getAllCourses = async (req, res) => {
 
 export const editCourse = async (req, res) => {
   try {
-    const { title, price, description, category } = req.body;
+    const { title, price, description, category,thumbnail } = req.body;
 
     const course = await getCourseById(req.params.id);
 
@@ -121,6 +121,7 @@ export const editCourse = async (req, res) => {
       description: description || course.description,
       price: price || course.price,
       category: mongoose.isValidObjectId(category) ? category : course.category,
+      thumbnail: thumbnail || course.thumbnail
     };
 
     const updateCourse = await Course.findByIdAndUpdate(

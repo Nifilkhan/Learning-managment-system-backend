@@ -49,7 +49,8 @@ export const getCategoryById = async(categoryId) => {
 
 export const getCourseById = async(id) => {
   try {
-    const course = await Course.findById(id);
+    const course = await Course.findById(id).populate('category','name');
+    console.log(course)
     return course;
   } catch (error) {
     return null;

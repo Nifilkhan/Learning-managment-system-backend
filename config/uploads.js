@@ -13,10 +13,10 @@ const s3 = new S3({
 });
 
 // Function to generate a presigned URL for file upload
-export const generatePresignedUrl = async (fileName, fileType, courseId,fileCategory) => {
+export const generatePresignedUrl = async (fileName, fileType) => {
     try {
-        const folder = fileCategory === 'video' ? 'videoUrl' : 'thumbnail';
-        const videoUrl = `uploads/${courseId}/${Date.now()}/${folder}/${fileName}`;
+        // const folder = fileCategory === 'video' ? 'videoUrl' : 'thumbnail';
+        const videoUrl = `uploads/${Date.now()}/${fileName}`;
         const params = {
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: videoUrl,
