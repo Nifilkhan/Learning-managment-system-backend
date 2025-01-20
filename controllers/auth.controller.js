@@ -5,7 +5,7 @@ import { generateOTP } from "../utils/otp.js";
 import transport from "../middleware/send.mail.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
-import { getUserCount } from "../services/userCount.service.js";
+import { getUserCount, getVerifiedUsers } from "../services/userCount.service.js";
 
 
 dotenv.config();
@@ -129,7 +129,7 @@ export const signin = async(req,res) => {
         },
         process.env.JWT_SECRET,
         {
-            expiresIn:'4h'
+            expiresIn:'1h'
         }
     )
     console.log(token)
@@ -142,13 +142,13 @@ export const signin = async(req,res) => {
         sameSite: 'Strict', // Restricts the cookie to same-site requests (prevents CSRF attacks)
     })
 
-    const decode= jwt.verify(token,process.env.JWT_SECRET)
+    const decode= jwt.verify(token,process.env.JWT_SECRET);
     console.log(decode.userId)
     console.log(decode.role)
+
         res.status(200).json({message:'User loggedin succesfully',user:{
             userId:decode.userId,
-            role:decode.role
-        }})
+            role:decode.role}})
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -178,10 +178,30 @@ export const logout = async(req,res) => {
 export const GetAllUsers = async(req,res) => {
     try {
         const VerifiedUsers = await getUserCount();
+        const users = await getVerifiedUsers();
         
-        res.status(200).json({message:'All verified users found ' , totalCount:VerifiedUsers})
+        res.status(200).json({message:'All verified users found ' , totalCount:VerifiedUsers,users:users})
     } catch (error) {
         res.status(500).json({message:'Internal server error'})
+    }
+}
+
+export const getUser = async(req,res) => {
+    try {
+        console.log(req.body)
+        console.log(req.user.id)
+        const user = await User.findById(req.user.id).select("-password");
+
+        console.log(user)
+
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+          }
+
+          res.status(200).json({email:user.email,name:user.name})
+    } catch (error) {
+        res.status(500).json({message:'Internal error occured in get user'})
     }
 }
 

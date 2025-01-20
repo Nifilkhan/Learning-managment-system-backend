@@ -70,7 +70,7 @@ export const getAllCourses = async (req, res) => {
 
     // console.log(req.query);
 
-    const { populatedCourses, totalCount } = await getAllCoursesService({
+    const { populatedCourses, totalCount,totalCourses } = await getAllCoursesService({
       category,
       search,
       limit,
@@ -78,7 +78,7 @@ export const getAllCourses = async (req, res) => {
     });
 
     // console.log(totalCount);
-    console.log(populatedCourses)
+    // console.log(populatedCourses)
 
     const parsedLimit = parseInt(limit,10) || 10;
     const parsedOffset = parseInt(offset,0) || 0;
@@ -91,6 +91,7 @@ export const getAllCourses = async (req, res) => {
       .json({
         message: "All course found by ",
         courses:populatedCourses,
+        totalCourses,
         totalCount,
         currentPage,
         totalPages,
@@ -178,6 +179,7 @@ export const monthlySale = async (req, res) => {
 export const getLatestCourses = async(req,res) => {
   try {
     const latestCourses = await getLatestCourseService();
+    console.log('latest courses from api',latestCourses)
 
     res.status(200).json({message:'Latest courses',latestCourses})
   } catch (error) {

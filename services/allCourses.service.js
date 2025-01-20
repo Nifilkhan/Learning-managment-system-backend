@@ -47,15 +47,17 @@ export const getAllCoursesService = async ({
     const courses = result?.data || [];
     const totalCount = result?.totalCount?.[0]?.count || 0;
 
-    console.log(courses);
-    console.log(totalCount)
+    const totalCourses = await Course.countDocuments({isDeleted:false})
+
+    // console.log(courses);
+    // console.log(totalCount)
     const populatedCourses = await Course.populate(courses, {
       path: "category",
-      select: "name", 
+      select: "name", // Only populate the `name` field
     });
-    console.log(populatedCourses)
+    // console.log(populatedCourses)
 
-    return { populatedCourses, totalCount };
+    return { populatedCourses, totalCount,totalCourses };
   } catch (error) {
     console.error("Error in getAllCoursesService:", error.message);
     throw new Error("Error while fetching courses");

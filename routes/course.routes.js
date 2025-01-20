@@ -32,6 +32,6 @@ router.post('/add-category',createCategory)
 router.get('/get-category',getCategory)
 
 //latest course 
-router.get('/latest-courses',getLatestCourses)
+router.get("/latest-courses",getLatestCourses)
 
 export default router;

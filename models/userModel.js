@@ -10,7 +10,7 @@ export const userScehma = mongoose.Schema({
     verified: { type: Boolean, default: false },
     verificationCode: { type: Number ,select:false},
     otpExpiration:{type:Date},
-    roles:{type:String, enum:['student','instructor','admin'],default:'student'}
+    roles:{type:String, enum:['student','admin'],default:'student'}
 }, {timestamps:true})
 
 const User = mongoose.model('User',userScehma);

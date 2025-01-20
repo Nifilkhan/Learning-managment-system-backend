@@ -1,5 +1,5 @@
 import express from "express";
-import { GetAllUsers, logout, signin, signup, verifyOtp } from "../controllers/auth.controller.js";
+import { GetAllUsers, getUser, logout, signin, signup, verifyOtp } from "../controllers/auth.controller.js";
 import { authenticatedUser } from "../middleware/auth.middleware.js";
 
 
@@ -14,5 +14,6 @@ router.post('/signin',signin)
 router.get('/get-verified-users',GetAllUsers)
 
 router.post('/logout',logout)
+router.get('/user',getUser)
 
 export default router;
