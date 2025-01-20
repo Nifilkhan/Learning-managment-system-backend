@@ -2,6 +2,7 @@ import connectDb from "../config/db.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import mongoose from "mongoose";
 import admin from "../models/admin.model.js";
+import Admin from "../models/admin.model.js";
 
 const adminCredentials = {
     name:'Nifil',
@@ -14,13 +15,13 @@ const adminCredentials = {
 const seedAdmin = async() => {
     try {
         await connectDb();
-        const seedAdminEmail = await admin.findOne({email:adminCredentials.email});
+        const seedAdminEmail = await Admin.findOne({email:adminCredentials.email});
         if(seedAdminEmail) {
             console.log('email already exists as admin')
         } else{
             const hashedPassword = await bcrypt.hash(adminCredentials.password,10);
             adminCredentials.password = hashedPassword;
-            const newAdmin = await admin(adminCredentials);
+            const newAdmin = await Admin(adminCredentials);
             await newAdmin.save();
             console.log("Admin data seeded successfully to the user collection!");
         }

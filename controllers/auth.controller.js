@@ -6,6 +6,7 @@ import transport from "../middleware/send.mail.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 import { getUserCount, getVerifiedUsers } from "../services/userCount.service.js";
+import Admin from "../models/admin.model.js";
 
 
 dotenv.config();
@@ -92,7 +93,14 @@ export const signin = async(req,res) => {
             return res.status(401).json({message:'Invalid credentials'})        
         }
 
-        if(email === process.env.STATIC_ADMIN_EMAIL && password === process.env.STATIC_ADMIN_PASSWORD) {
+        const admin = await Admin.findOne({email})
+        if(admin) {
+            const isPasswordValide = await bcrypt.compare(password,admin.password);
+
+            if(!isPasswordValide) {
+                return res.status(402).json({message:'password is invalid'})
+            }
+
             const adminToken = jwt.sign(
                 {
                     role: 'admin', // Add any additional payload data as needed
