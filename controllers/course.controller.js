@@ -179,7 +179,7 @@ export const monthlySale = async (req, res) => {
 export const getLatestCourses = async(req,res) => {
   try {
     const latestCourses = await getLatestCourseService();
-    console.log('latest courses from api',latestCourses)
+    // console.log('latest courses from api',latestCourses)
 
     res.status(200).json({message:'Latest courses',latestCourses})
   } catch (error) {

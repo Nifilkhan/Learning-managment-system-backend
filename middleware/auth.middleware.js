@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const authenticatedUser = (req, res, next) => {
   try {
+    console.log('token in middleware',req.cookies)
     const token = req.cookies.Authorization;
     console.log('token from middleware',token)
 
@@ -15,7 +16,8 @@ export const authenticatedUser = (req, res, next) => {
 
     console.log('user decoded value',decode)
 
-    req.user = {id:decode.userId};
+    req.userId = decode?.userId;
+    req.role = decode?.role
 
     next();
   } catch (error) {

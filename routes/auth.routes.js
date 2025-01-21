@@ -14,6 +14,6 @@ router.post('/signin',signin)
 router.get('/get-verified-users',GetAllUsers)
 
 router.post('/logout',logout)
-router.get('/user',getUser)
+router.get('/user', authenticatedUser,getUser)
 
 export default router;

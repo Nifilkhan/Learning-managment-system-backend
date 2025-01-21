@@ -133,30 +133,23 @@ export const signin = async(req,res) => {
     const token = jwt.sign(
         {
             userId:user._id,
-            role:user.roles
+            role:user.role
         },
         process.env.JWT_SECRET,
         {
             expiresIn:'1h'
         }
     )
-    console.log(token)
 
     //storing jwt in cookie storage and it expires in 4hr
-    res.cookie('Authorization',token,{
+   return res.cookie('Authorization',token,{
         httpOnly:true,
-        secure: process.env.NODE_ENV === 'production', // Only send the cookie over HTTPS in production
-        maxAge: 4 * 60 * 60 * 1000,
-        sameSite: 'Strict', // Restricts the cookie to same-site requests (prevents CSRF attacks)
-    })
+        secure: true, // Only send the cookie over HTTPS in production
+        // maxAge: 4 * 60 * 60 * 1000,
+        sameSite: 'Lax', // Restricts the cookie to same-site requests (prevents CSRF attacks)
+    }).status(200).json({message:'User loggedin succesfully',user:user})
 
-    const decode= jwt.verify(token,process.env.JWT_SECRET);
-    console.log(decode.userId)
-    console.log(decode.role)
-
-        res.status(200).json({message:'User loggedin succesfully',user:{
-            userId:decode.userId,
-            role:decode.role}})
+    console.log('generated token',token)
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -196,18 +189,18 @@ export const GetAllUsers = async(req,res) => {
 
 export const getUser = async(req,res) => {
     try {
-        console.log(req.body)
-        console.log(req.user.id)
-        const user = await User.findById(req.user.id).select("-password");
+       
+        console.log(req.userId)
+        const user = await User.findById(req.userId).select("-password");
 
-        console.log(user)
+        console.log('user from the controller verified',user)
 
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
           }
 
-          res.status(200).json({email:user.email,name:user.name})
+          res.status(200).json({user})
     } catch (error) {
         res.status(500).json({message:'Internal error occured in get user'})
     }

@@ -13,10 +13,10 @@ export const getLatestCourseService = async() => {
                 $limit:5
             }
         ]
-        console.log(pipeline)
+        // console.log(pipeline)
 
         const latestCourses = await Course.aggregate(pipeline);
-        console.log(latestCourses)
+        // console.log(latestCourses)
         return latestCourses;
     } catch (error) {
         throw new error('Error occured while getting the latest course',error)

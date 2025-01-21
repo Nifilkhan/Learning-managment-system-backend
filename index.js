@@ -9,6 +9,7 @@ import sectionRoute from './routes/section.routes.js'
 import http from 'http';
 import { Server as socketIo } from "socket.io";
 import lecture from "./routes/lecture.routes.js";
+import cartRoute from './routes/cart.routes.js'
 
 const app = express();
 
@@ -20,7 +21,10 @@ dotenv.config();
 
 const port = process.env.PORT || 6002;
 
-app.use(cors());
+app.use(cors({
+  origin:"http://localhost:4200",
+  credentials:true,
+}));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -28,6 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRouts);
 app.use("/api/section",sectionRoute);
 app.use("/api/lecture",lecture);
+app.use("/api/course",cartRoute)
 
 // io.on('connection',(socket) => {
 //   console.log('A new user connected',socket.id);
