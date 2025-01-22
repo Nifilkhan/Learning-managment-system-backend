@@ -191,7 +191,7 @@ export const getUser = async(req,res) => {
     try {
        
         console.log(req.userId)
-        const user = await User.findById(req.userId).select("-password");
+        const user = await User.findById(req.userId).select("firstName lastName email");
 
         console.log('user from the controller verified',user)
 
@@ -201,6 +201,7 @@ export const getUser = async(req,res) => {
           }
 
           res.status(200).json({user})
+          console.log('response user:',user)
     } catch (error) {
         res.status(500).json({message:'Internal error occured in get user'})
     }

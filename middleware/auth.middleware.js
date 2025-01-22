@@ -6,19 +6,15 @@ export const authenticatedUser = (req, res, next) => {
     const token = req.cookies.Authorization;
     console.log('token from middleware',token)
 
-    if (!token) {
-      return res
-        .status(401)
-        .json({ message: "Access denided,No token provided" });
+    if(token){
+      const decode = jwt.verify(token,process.env.JWT_SECRET);
+  
+      console.log('user decoded value',decode)
+  
+      req.userId = decode?.userId;
+      req.role = decode?.role;
+  
     }
-
-    const decode = jwt.verify(token,process.env.JWT_SECRET);
-
-    console.log('user decoded value',decode)
-
-    req.userId = decode?.userId;
-    req.role = decode?.role
-
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
