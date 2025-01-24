@@ -14,7 +14,7 @@ export const addCourse = async (req, res) => {
   try {
     const { title, category, description, price } = req.body;
     const thumbnailImage= req.body.thumbnail|| null;
-    console.log('thumbnail image for the course',thumbnailImage)
+    // console.log('thumbnail image for the course',thumbnailImage)
     if(!thumbnailImage) {
       return res.status(402).json({meessgae:'Thumbnail image is not provided'})
     }

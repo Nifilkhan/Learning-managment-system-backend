@@ -5,8 +5,8 @@ import { generatePresignedUrl } from "../config/uploads.js";
 export const getPreSignedUrl = async (req, res) => {
   try {
     const { fileName, fileType,fileCategory } = req.query;
-    console.log('File name:',fileName);
-    console.log('File type:',fileType);
+    // console.log('File name:',fileName);
+    // console.log('File type:',fileType);
     // console.log('file category',fileCategory)
 
     if (!fileName || !fileType ) {
@@ -15,13 +15,13 @@ export const getPreSignedUrl = async (req, res) => {
         .json({ message: "File name, type,file category and courseId are required" });
     }
 
-    console.log("Received request for presigned URL with:", req.query);
+    // console.log("Received request for presigned URL with:", req.query);
 
     const { preSignedUrl, videoUrl } = await generatePresignedUrl(
       fileName,
       fileType,
     );
-    console.log(preSignedUrl, "presigned url");
+    // console.log(preSignedUrl, "presigned url");
 
     res.status(200).json({ preSignedUrl, videoUrl });
   } catch (error) {
@@ -38,9 +38,9 @@ export const addLecture = async (req, res) => {
   try {
     const { sectionId } = req.params;
     const { title, contentType, videoUrl, articleContent,descripiton } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
-    console.log("Received request to add lecture with data:", req.body);
+    // console.log("Received request to add lecture with data:", req.body);
 
     const newLecture = new Lecture({
       title,
@@ -48,11 +48,15 @@ export const addLecture = async (req, res) => {
       videoUrl,
       articleContent,
       descripiton,
+      sectionId,
     });
-
+    if (!sectionId) {
+      return res.status(400).json({ message: "Section ID is required" });
+    }
     const savedLecture = await newLecture.save();
 
     const updateSection = await addLectureToSection(sectionId, savedLecture._id);
+    console.log('update section in the controller',updateSection)
 
     res
       .status(200)
@@ -102,6 +106,27 @@ export const getLecture = async(req,res) => {
     res.status(200).json({message:'Lecture Found',lecture})
   } catch (error) {
     throw new error('Error while getting the lecture')
+  }
+}
+
+export const getLectures = async(req,res) => {
+  try {
+    const {sectionId} = req.params;
+    console.log('section id from params',req.params);
+
+    if (!sectionId) {
+      return res.status(400).json({ message: 'Section ID is required' });
+    }
+
+    const lectures = await Lecture.find({ sectionId });
+    console.log(lectures)
+
+    if(lectures.length === 0) {
+      return res.status(404).json({message:'No lectures found'})
+    }
+    return res.status(200).json({message:'Lectures found',lectures})
+  } catch (error) {
+    res.status(500).json({message:'Error occured while getting the lectures'})
   }
 }
 

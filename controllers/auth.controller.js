@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 import { getUserCount, getVerifiedUsers } from "../services/userCount.service.js";
 import Admin from "../models/admin.model.js";
+import { getUserById } from "../services/user.service.js";
 
 
 dotenv.config();
@@ -121,9 +122,9 @@ export const signin = async(req,res) => {
         }
     const user = await User.findOne({email}).select('+password');
 
-    if(!user) {
-        return res.status(404).json({message:'User not found'})
-    }
+    // if(!user) {
+    //     return res.status(404).json({message:'User not found'})
+    // }
     const isPasswordValid = await bcrypt.compare(password,user.password);
     if(!isPasswordValid){
         return res.status(401).json({message:'Invalid password'})
@@ -145,7 +146,7 @@ export const signin = async(req,res) => {
    return res.cookie('Authorization',token,{
         httpOnly:true,
         secure: true, // Only send the cookie over HTTPS in production
-        // maxAge: 4 * 60 * 60 * 1000,
+        maxAge: 4 * 60 * 60 * 1000,
         sameSite: 'Lax', // Restricts the cookie to same-site requests (prevents CSRF attacks)
     }).status(200).json({message:'User loggedin succesfully',user:user})
 
@@ -160,7 +161,7 @@ export const logout = async(req,res) => {
         res.clearCookie('Authorization',{
             httpOnly:true,
             secure:process.env.NODE_ENV === 'production',
-            sameSite:'strict'
+            sameSite:'Lax'
         })
 
         res.clearCookie('adminLoggedIn',{
@@ -191,13 +192,13 @@ export const getUser = async(req,res) => {
     try {
        
         console.log(req.userId)
-        const user = await User.findById(req.userId).select("firstName lastName email");
+        const user = await getUserById(req.userId);
 
         console.log('user from the controller verified',user)
 
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(401).json({ message: "User not found" });
           }
 
           res.status(200).json({user})
