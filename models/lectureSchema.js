@@ -10,6 +10,7 @@ export const lectureSchema = mongoose.Schema({
         return this.contentType === 'article'
     }},
     descripiton:{type:String},
+    sectionId:{type:mongoose.Schema.Types.ObjectId,ref:'Section',required:true},
     isDeleted: { type: Boolean,default:false },
 },{timestamps:true})
 
