@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { getUserCount, getVerifiedUsers } from "../services/userCount.service.js";
 import Admin from "../models/admin.model.js";
 import { getUserById } from "../services/user.service.js";
+import passport from "passport";
 
 
 dotenv.config();
@@ -125,6 +126,10 @@ export const signin = async(req,res) => {
     // if(!user) {
     //     return res.status(404).json({message:'User not found'})
     // }
+
+    if(user.googleId) {
+        return res.status(403).json({message:'User already registered with google'})
+    }
     const isPasswordValid = await bcrypt.compare(password,user.password);
     if(!isPasswordValid){
         return res.status(401).json({message:'Invalid password'})
@@ -147,7 +152,7 @@ export const signin = async(req,res) => {
         httpOnly:true,
         secure: true, // Only send the cookie over HTTPS in production
         maxAge: 4 * 60 * 60 * 1000,
-        sameSite: 'Lax', // Restricts the cookie to same-site requests (prevents CSRF attacks)
+        sameSite: 'strict', // Restricts the cookie to same-site requests (prevents CSRF attacks)
     }).status(200).json({message:'User loggedin succesfully',user:user})
 
     console.log('generated token',token)
@@ -161,7 +166,7 @@ export const logout = async(req,res) => {
         res.clearCookie('Authorization',{
             httpOnly:true,
             secure:process.env.NODE_ENV === 'production',
-            sameSite:'Lax'
+            sameSite:'strict'
         })
 
         res.clearCookie('adminLoggedIn',{
@@ -174,6 +179,42 @@ export const logout = async(req,res) => {
         
     } catch (error) {
         res.status(500).json({message:'Error occured during logout'})
+    }
+}
+
+//google concent screen for authentication
+export const googleLogin = passport.authenticate('google', {scope:['profile', 'email']});
+
+
+export const googleCallback = (req,res) => {
+
+    try {
+        const user = jwt.sign({id:req.user._id},process.env.JWT_SECRET,{expiresIn:'1h'})
+        res.cookie('Authorization',user,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === 'production',
+            sameSite:'strict'
+        });
+        res.redirect(`${process.env.HOME_URL}`)
+    } catch (error) {
+        res.status(500).json({message:'Internal server error'})
+    }
+}
+
+export const verifySession = async(req,res) => {
+    const token = req.cookies.Authorization;
+
+    if(!token) {
+        return res.status(401).json({ isAuthenticated: false })
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('decoded user from the verifySession function',decoded)
+
+        res.status(200).json({ isAuthenticated: true, user:decoded });
+    } catch (error) {
+        res.status(500).json({ isAuthenticated: false })
     }
 }
 

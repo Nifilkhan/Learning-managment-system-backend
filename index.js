@@ -10,6 +10,9 @@ import http from 'http';
 import { Server as socketIo } from "socket.io";
 import lecture from "./routes/lecture.routes.js";
 import cartRoute from './routes/cart.routes.js'
+import Passport from "passport";
+import './config/passport.config.js'
+import session from 'express-session'
 
 const app = express();
 
@@ -27,6 +30,19 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
+app.use(session({
+  secret:process.env.SESSION_SECRET,
+  resave:false,
+  saveUninitialized:false,
+  cookie:{
+    httpOnly:true,
+    secure:process.env.NODE_ENV === 'production',
+    sameSite:'strict'
+  }
+}))
+
+app.use(Passport.initialize());
+app.use(Passport.session());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRouts);
@@ -54,7 +70,7 @@ connectDb();
 app.use(function (err, req, res, next) {
   console.log({ err });
 
-  res.status(err.status || 500);
+  res.status(500);
   res.json("error", {
     message: err.message,
     error: 'error',
