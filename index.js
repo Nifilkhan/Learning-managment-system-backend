@@ -78,6 +78,8 @@ app.use(function (err, req, res, next) {
   });
 });
 
+
+
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the server" });
 });

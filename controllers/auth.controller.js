@@ -117,7 +117,7 @@ export const signin = async(req,res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Secure cookie in production
                 maxAge: 4 * 60 * 60 * 1000, // 4 hours expiration
-                sameSite: 'Strict',
+                sameSite: 'lax',
             });
             return res.status(200).json({role:'admin',message:'Admin logged in succesfully'})
         }
@@ -152,8 +152,13 @@ export const signin = async(req,res) => {
         httpOnly:true,
         secure: true, // Only send the cookie over HTTPS in production
         maxAge: 4 * 60 * 60 * 1000,
-        sameSite: 'strict', // Restricts the cookie to same-site requests (prevents CSRF attacks)
-    }).status(200).json({message:'User loggedin succesfully',user:user})
+        sameSite: 'lax', // Restricts the cookie to same-site requests (prevents CSRF attacks)
+    }).status(200).json({message:'User loggedin succesfully',token,
+        user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+    },})
 
     console.log('generated token',token)
     } catch (error) {
@@ -166,13 +171,13 @@ export const logout = async(req,res) => {
         res.clearCookie('Authorization',{
             httpOnly:true,
             secure:process.env.NODE_ENV === 'production',
-            sameSite:'strict'
+            sameSite:'lax'
         })
 
         res.clearCookie('adminLoggedIn',{
             httpOnly:true,
             secure:process.env.NODE_ENV === 'production',
-            sameSite:'strict'
+            sameSite:'lax'
         })
 
         return res.status(200).json({message:'logged out succesfully'})
@@ -189,7 +194,7 @@ export const googleLogin = passport.authenticate('google', {scope:['profile', 'e
 export const googleCallback = (req,res) => {
 
     try {
-        const user = jwt.sign({id:req.user._id},process.env.JWT_SECRET,{expiresIn:'1h'})
+        const user = jwt.sign({userId:req.user._id},process.env.JWT_SECRET,{expiresIn:'1h'})
         res.cookie('Authorization',user,{
             httpOnly:true,
             secure:process.env.NODE_ENV === 'production',
