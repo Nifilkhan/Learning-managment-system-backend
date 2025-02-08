@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Cart from "../models/cart.schema.js";
 import User from "../models/userModel.js";
+import { removeFromCartSevice } from "../services/cart.service.js";
 
 
 export const addCart = async(req,res) => {
@@ -34,5 +35,33 @@ export const addCart = async(req,res) => {
         res.status(200).json({message:'Cart added successfully',cart})
     } catch (error) {
         res.status(500).json({message:'internal error occured while adding item in cart'})
+    }
+}
+
+export const getCartItems = async(req,res) => {
+    try {
+        const userId = req.userId;
+        const cart = await Cart.findOne({userId}).populate('items');
+        // console.log('cart items from get api',cart)
+
+        if(!cart) {
+            return res.status(401).json({message:'No items found in the cart'})
+        }
+
+        res.status(200).json({message:'items from the cart',cart})
+    } catch (error) {
+        res.status(500).json({message:'internal error occured while getting the cart items'})
+    }
+}
+
+export const removeCourse = async(req,res) => {
+    try {
+
+        const removeCourse = await removeFromCartSevice(req.userId,req.params.courseId);
+        console.log('remove course controller',removeCourse)
+        res.status(200).json({message:'cart item removed succesfully',removeCourse});
+        
+    } catch (error) {
+        res.status(500).json({message:'internal error occured while removing the course'})
     }
 }
