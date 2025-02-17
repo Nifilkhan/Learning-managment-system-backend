@@ -11,7 +11,7 @@ export const authenticatedUser = async (req, res, next) => {
     }
 
     const decode = verifyToken(token);
-    console.log("Decoded token:", decode);
+    // console.log("Decoded token:", decode);
 
     if (!decode?.userId) {
       return res.status(401).json({ message: "Invalid token payload" });
@@ -20,7 +20,7 @@ export const authenticatedUser = async (req, res, next) => {
     req.userId = decode?.userId;
     req.role = decode?.role;
 
-    console.log("user id:", req.userId);
+    // console.log("user id:", req.userId);
 
     next();
   } catch (error) {

@@ -112,7 +112,7 @@ export const signin = async(req,res) => {
                     expiresIn: '4h', // Set token expiration
                 }
             );
-            console.log('Admin token',adminToken)
+            // console.log('Admin token',adminToken)
             res.cookie('adminLoggedIn', true, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Secure cookie in production
@@ -215,7 +215,7 @@ export const verifySession = async(req,res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('decoded user from the verifySession function',decoded)
+        // console.log('decoded user from the verifySession function',decoded)
 
         res.status(200).json({ isAuthenticated: true, user:decoded });
     } catch (error) {
@@ -237,10 +237,10 @@ export const GetAllUsers = async(req,res) => {
 export const getUser = async(req,res) => {
     try {
        
-        console.log(req.userId)
+        // console.log(req.userId)
         const user = await getUserById(req.userId);
 
-        console.log('user from the controller verified',user)
+        // console.log('user from the controller verified',user)
 
 
         if (!user) {
@@ -248,7 +248,7 @@ export const getUser = async(req,res) => {
           }
 
           res.status(200).json({user})
-          console.log('response user:',user)
+        //   console.log('response user:',user)
     } catch (error) {
         res.status(500).json({message:'Internal error occured in get user'})
     }

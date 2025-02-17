@@ -17,7 +17,7 @@ export const getAllCoursesService = async ({
   ];
 
   // console.log(pipeline);
-  if (category & mongoose.Types.ObjectId.isValid(category)) {
+  if (category && mongoose.Types.ObjectId.isValid(category)) {
     pipeline.push({ $match: { category: mongoose.Types.ObjectId(category) } });
   }
 
@@ -26,7 +26,7 @@ export const getAllCoursesService = async ({
     const regex = new RegExp(search, "i");
     pipeline.push({
       $match: {
-        $or: [{ title: { $regex: regex } }, { description: { $regex: regex } }],
+        $or: [{ title: { $regex: regex } }, { category: { $regex: regex } }],
       },
     });
   }

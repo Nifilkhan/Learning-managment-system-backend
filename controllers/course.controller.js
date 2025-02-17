@@ -66,10 +66,12 @@ export const getCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
+    console.log(req.query);
     const { limit, offset, search, category } = req.query;
 
-    // console.log(req.query);
+    console.log(limit,offset,search,category);
 
+    
     const { populatedCourses, totalCount,totalCourses } = await getAllCoursesService({
       category,
       search,
@@ -77,14 +79,13 @@ export const getAllCourses = async (req, res) => {
       offset,
     });
 
-    // console.log(totalCount);
-    // console.log(populatedCourses)
+    console.log('search data',search)
 
     const parsedLimit = parseInt(limit,10) || 10;
     const parsedOffset = parseInt(offset,0) || 0;
 
     const currentPage = Math.floor(parsedOffset / parsedLimit) + 1;
-    const totalPages = Math.ceil(totalCount / parsedLimit);
+    const totalPages = totalCount > 0 ? Math.ceil(totalCount / parsedLimit) : 1;
 
     res
       .status(200)

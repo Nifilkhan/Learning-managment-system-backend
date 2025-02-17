@@ -10,6 +10,7 @@ import http from 'http';
 import { Server as socketIo } from "socket.io";
 import lecture from "./routes/lecture.routes.js";
 import cartRoute from './routes/cart.routes.js'
+import payment from './routes/payment.routes.js'
 import Passport from "passport";
 import './config/passport.config.js'
 import session from 'express-session'
@@ -48,7 +49,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRouts);
 app.use("/api/section",sectionRoute);
 app.use("/api/lecture",lecture);
-app.use("/api/course",cartRoute)
+app.use("/api/course",cartRoute);
+app.use("/api/payment",payment);
 
 // io.on('connection',(socket) => {
 //   console.log('A new user connected',socket.id);

@@ -1,6 +1,9 @@
 import Lecture from "../models/lectureSchema.js";
 import { addLectureToSection, editLectureService, getLectureService, softDeleteLecture } from "../services/lecture.service.js";
 import { generatePresignedUrl } from "../config/uploads.js";
+import Course from "../models/courseModel.js";
+import User from "../models/userModel.js";
+import Section from "../models/sectionSchema.js";
 
 export const getPreSignedUrl = async (req, res) => {
   try {
@@ -15,7 +18,6 @@ export const getPreSignedUrl = async (req, res) => {
         .json({ message: "File name, type,file category and courseId are required" });
     }
 
-    // console.log("Received request for presigned URL with:", req.query);
 
     const { preSignedUrl, videoUrl } = await generatePresignedUrl(
       fileName,
@@ -56,7 +58,7 @@ export const addLecture = async (req, res) => {
     const savedLecture = await newLecture.save();
 
     const updateSection = await addLectureToSection(sectionId, savedLecture._id);
-    console.log('update section in the controller',updateSection)
+    // console.log('update section in the controller',updateSection)
 
     res
       .status(200)
@@ -109,26 +111,42 @@ export const getLecture = async(req,res) => {
   }
 }
 
-export const getLectures = async(req,res) => {
+export const getLectures = async (req, res) => {
   try {
-    const {sectionId} = req.params;
-    console.log('section id from params',req.params);
+    const userId = req.userId;
+    const { sectionId } = req.params;
 
-    if (!sectionId) {
-      return res.status(400).json({ message: 'Section ID is required' });
-    }
+    if (!sectionId) return res.status(400).json({ message: "Section ID is required" });
 
     const lectures = await Lecture.find({ sectionId });
-    console.log(lectures)
+    if (!lectures.length) return res.status(404).json({ message: "No lectures found" });
 
-    if(lectures.length === 0) {
-      return res.status(404).json({message:'No lectures found'})
-    }
-    return res.status(200).json({message:'Lectures found',lectures})
+    const section = await Section.findById(sectionId);
+    if (!section) return res.status(404).json({ message: "Section not found" });
+
+    const courseId = section.courseId;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const hasPurchased = user.purchasedCourse.includes(courseId.toString());
+
+    // Get all sections of the course and determine the first one
+    const firstSection = (await Section.find({ courseId }).sort({ createdAt: 1 }))[0];
+
+    // Map through lectures and lock/unlock based on conditions
+    const updatedLectures = lectures.map((lecture, index) => ({
+      ...lecture.toObject(),
+      locked: !(sectionId === firstSection._id.toString() && index === 0) && !hasPurchased,
+    }));
+    console.log('updated lecture from the get lecture controller',updatedLectures)
+
+    res.status(200).json({ message: "Lectures found", lectures: updatedLectures });
   } catch (error) {
-    res.status(500).json({message:'Error occured while getting the lectures'})
+    console.error("Error fetching lectures:", error);
+    res.status(500).json({ message: "Error occurred while getting the lectures" });
   }
-}
+};
+
 
 export const deleteLecture = async(req,res) => {
   try {
@@ -138,7 +156,7 @@ export const deleteLecture = async(req,res) => {
     
 
     const lecture = await softDeleteLecture(lectureId);
-    console.log('deleted lecture in the controller',lecture)
+    // console.log('deleted lecture in the controller',lecture)
     res.status(200).json({message:'Lecture deleted succesfully',lecture})
   } catch (error) {
     throw new error('Error occured while deleting the lecture')
