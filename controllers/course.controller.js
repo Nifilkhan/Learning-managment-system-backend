@@ -13,10 +13,12 @@ import { getLatestCourseService } from "../services/latestCourses.service.js";
 export const addCourse = async (req, res) => {
   try {
     const { title, category, description, price } = req.body;
-    const thumbnailImage= req.body.thumbnail|| null;
+    const thumbnailImage = req.body.thumbnail || null;
     // console.log('thumbnail image for the course',thumbnailImage)
-    if(!thumbnailImage) {
-      return res.status(402).json({meessgae:'Thumbnail image is not provided'})
+    if (!thumbnailImage) {
+      return res
+        .status(402)
+        .json({ meessgae: "Thumbnail image is not provided" });
     }
 
     const courseCategory = await getCategoryById(category);
@@ -30,7 +32,7 @@ export const addCourse = async (req, res) => {
       description,
       category,
       price,
-      thumbnail:thumbnailImage
+      thumbnail: thumbnailImage,
     });
 
     await newCourse.save();
@@ -66,37 +68,43 @@ export const getCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    console.log(req.query);
-    const { limit, offset, search, category } = req.query;
+    // console.log(req.query);
+    const { limit, offset, search, category,sortBy, sortOrder } = req.query;
+    console.log(req.query)
 
-    console.log(limit,offset,search,category);
+    // console.log(limit, offset, search, category);
 
-    
-    const { populatedCourses, totalCount,totalCourses } = await getAllCoursesService({
-      category,
-      search,
-      limit,
-      offset,
-    });
+    const { populatedCourses, totalCount, totalCourses } =
+      await getAllCoursesService({
+        category,
+        search,
+        limit,
+        offset,
+        sortBy,
+        sortOrder
+      });
 
-    console.log('search data',search)
+      console.log('category',category);
 
-    const parsedLimit = parseInt(limit,10) || 10;
-    const parsedOffset = parseInt(offset,0) || 0;
+    // console.log("search data", search);
 
-    const currentPage = Math.floor(parsedOffset / parsedLimit) + 1;
+    const parsedLimit = parseInt(limit, 10) || 10;
+    const parsedOffset = parseInt(offset, 0) || 0;
+
+    const currentPage = parsedOffset / parsedLimit + 1;
     const totalPages = totalCount > 0 ? Math.ceil(totalCount / parsedLimit) : 1;
 
-    res
-      .status(200)
-      .json({
-        message: "All course found by ",
-        courses:populatedCourses,
-        totalCourses,
-        totalCount,
-        currentPage,
-        totalPages,
-      });
+    // console.log('total page',totalPages);
+    // console.log('current page',currentPage)
+
+    res.status(200).json({
+      message: "All course found by ",
+      courses: populatedCourses,
+      totalCourses,
+      totalCount,
+      currentPage,
+      totalPages,
+    });
   } catch (error) {
     res.status(500).json({ message: "error while getting the course" });
   }
@@ -108,7 +116,7 @@ export const getAllCourses = async (req, res) => {
 
 export const editCourse = async (req, res) => {
   try {
-    const { title, price, description, category,thumbnail } = req.body;
+    const { title, price, description, category, thumbnail } = req.body;
 
     const course = await getCourseById(req.params.id);
 
@@ -123,7 +131,7 @@ export const editCourse = async (req, res) => {
       description: description || course.description,
       price: price || course.price,
       category: mongoose.isValidObjectId(category) ? category : course.category,
-      thumbnail: thumbnail || course.thumbnail
+      thumbnail: thumbnail || course.thumbnail,
     };
 
     const updateCourse = await Course.findByIdAndUpdate(
@@ -177,15 +185,17 @@ export const monthlySale = async (req, res) => {
   }
 };
 
-export const getLatestCourses = async(req,res) => {
+export const getLatestCourses = async (req, res) => {
   try {
     const latestCourses = await getLatestCourseService();
     // console.log('latest courses from api',latestCourses)
 
-    res.status(200).json({message:'Latest courses',latestCourses})
+    res.status(200).json({ message: "Latest courses", latestCourses });
   } catch (error) {
-    res.status(500).json({message:'error occured in latest course controller'})
+    res
+      .status(500)
+      .json({ message: "error occured in latest course controller" });
   }
-}
+};
 
 export default { addCourse, getCourse, getAllCourses };

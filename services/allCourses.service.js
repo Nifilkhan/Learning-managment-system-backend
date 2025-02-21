@@ -6,6 +6,8 @@ export const getAllCoursesService = async ({
   search,
   limit,
   offset,
+  sortBy,
+  sortOrder
 }) => {
   const parsedLimit = parseInt(limit) || 10;
   const parsedOffset = parseInt(offset) || 0;
@@ -18,7 +20,7 @@ export const getAllCoursesService = async ({
 
   // console.log(pipeline);
   if (category && mongoose.Types.ObjectId.isValid(category)) {
-    pipeline.push({ $match: { category: mongoose.Types.ObjectId(category) } });
+    pipeline.push({ $match: { category: new mongoose.Types.ObjectId(category) } });
   }
 
   // console.log(category);
@@ -31,9 +33,9 @@ export const getAllCoursesService = async ({
     });
   }
 
-  // if (sortBy) {
-  //   pipeline.push({ $sort: { [sortBy]: sortOrder === "desc" ? -1 : 1 } });
-  // }
+  if (sortBy && sortOrder) {
+    pipeline.push({ $sort: { [sortBy]: sortOrder === "desc" ? -1 : 1 } });
+  }
 
   pipeline.push({
     $facet: {
