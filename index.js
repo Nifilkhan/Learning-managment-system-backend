@@ -3,7 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDb from "./config/db.js";
 import dotenv from "dotenv";
-import authRoutes from "../LMS_Backend/routes/auth.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import courseRouts from "./routes/course.routes.js";
 import sectionRoute from './routes/section.routes.js'
 import http from 'http';
