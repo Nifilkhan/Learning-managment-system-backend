@@ -26,7 +26,7 @@ dotenv.config();
 const port = process.env.PORT || 6002;
 
 app.use(cors({
-  origin:"http://localhost:4200",
+  origin:process.env.CLIENT_URL,
   credentials:true,
 }));
 app.use(cookieParser());
