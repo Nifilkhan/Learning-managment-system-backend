@@ -3,6 +3,7 @@ import {
   addCourse,
   deleteCourse,
   editCourse,
+  getAllCourse,
   getAllCourses,
   getCourse,
   getLatestCourses,
@@ -23,7 +24,8 @@ router.post(
 router.get("/get-course/:id", getCourse);
 router.get("/all-courses", getAllCourses);
 router.delete('/delete-course/:id',deleteCourse);
-router.put('/edit-course/:id' ,editCourse)
+router.put('/edit-course/:id' ,editCourse);
+router.get('/get-courses',getAllCourse);
 
 //sales report of the course per month
 router.get('/monthly-sale',monthlySale);

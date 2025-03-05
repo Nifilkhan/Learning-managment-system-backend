@@ -110,6 +110,22 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
+
+export const getAllCourse = async(req,res) => {
+  try {
+
+    const courses = await Course.find({isDeleted:false}).populate('category');
+
+    if(!courses) {
+      return res.status(404).json({message:'no courses found'})
+    }
+
+    res.status(200).json({message:'All courses found',courses})
+    
+  } catch (error) {
+    res.status(500).json({message:'internal server error occured in get all course api'})
+  }
+}
 /**
  * Edit course with the specific id
  */

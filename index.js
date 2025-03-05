@@ -72,8 +72,7 @@ connectDb();
 app.use(function (err, req, res, next) {
   console.log({ err });
 
-  res.status(500);
-  res.json("error", {
+  res.status(500).json("error", {
     message: err.message,
     error: 'error',
     details: err.stack || {} 

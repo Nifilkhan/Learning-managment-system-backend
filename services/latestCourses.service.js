@@ -10,7 +10,7 @@ export const getLatestCourseService = async() => {
                 $sort:{createdAt:-1}
             },
             {
-                $limit:5
+                $limit:4
             }
         ]
         // console.log(pipeline)
