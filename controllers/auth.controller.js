@@ -144,14 +144,14 @@ export const signin = async(req,res) => {
         },
         process.env.JWT_SECRET,
         {
-            expiresIn:'1h'
+            expiresIn:'4h'
         }
     )
 
     //storing jwt in cookie storage and it expires in 4hr
    return res.cookie('Authorization',token,{
         httpOnly:true,
-        secure: true, // Only send the cookie over HTTPS in production
+        secure: process.env.NODE_ENV === "production", // Only send the cookie over HTTPS in production
         maxAge: 4 * 60 * 60 * 1000,
         sameSite: 'lax', // Restricts the cookie to same-site requests (prevents CSRF attacks)
     }).status(200).json({message:'User loggedin succesfully',token,
