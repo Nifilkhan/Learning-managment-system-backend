@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 export const purchaseSchema = mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+    courseId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
     paymentId: { type: String, required: true },
-    status: { type: string, enum: ["pending", "success","failed"], default: "pending" },
+    status: { type: String, enum: ["pending", "success","failed"], default: "pending" },
   },
   {
     timestamps: true,

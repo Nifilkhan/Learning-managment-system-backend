@@ -12,7 +12,7 @@ export const userScehma = mongoose.Schema({
     verificationCode: { type: Number ,select:false},
     otpExpiration:{type:Date},
     role:{type:String, enum:['student','admin'],default:'student'},
-    purchasedCourse:[{type:mongoose.Schema.Types.ObjectId,ref:'Purchase'}]
+    purchasedCourses:[{type:mongoose.Schema.Types.ObjectId,ref:'Purchase'}]
 }, {timestamps:true})
 
 const User = mongoose.model('User',userScehma);

@@ -13,6 +13,8 @@ import {
 import { createCategory, getCategory } from "../controllers/category.controller.js";
 import { validateRequest } from "../middleware/validating.middleware.js";
 import { addCourseSchema } from "../validations/course.validations.js";
+import { authenticatedUser } from "../middleware/auth.middleware.js";
+import { purchasedCourse } from "../controllers/purchasedCourse.controller.js";
 
 const router = express.Router();
 
@@ -22,10 +24,12 @@ router.post(
   addCourse
 );
 router.get("/get-course/:id", getCourse);
-router.get("/all-courses", getAllCourses);
+router.get("/all-courses", authenticatedUser ,getAllCourses);
 router.delete('/delete-course/:id',deleteCourse);
 router.put('/edit-course/:id' ,editCourse);
 router.get('/get-courses',getAllCourse);
+
+router.get('/puchased-courses',authenticatedUser,purchasedCourse)
 
 //sales report of the course per month
 router.get('/monthly-sale',monthlySale);

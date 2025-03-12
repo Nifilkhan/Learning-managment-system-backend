@@ -100,7 +100,7 @@ export const signin = async(req,res) => {
             const isPasswordValide = await bcrypt.compare(password,admin.password);
 
             if(!isPasswordValide) {
-                return res.status(402).json({message:'password is invalid'})
+                return res.status(401).json({message:'password is invalid'})
             }
 
             const adminToken = jwt.sign(

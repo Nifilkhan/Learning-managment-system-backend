@@ -70,6 +70,7 @@ export const getAllCourses = async (req, res) => {
   try {
     // console.log(req.query);
     const { limit, offset, search, category,sortBy, sortOrder } = req.query;
+    const userId = req.userId
     console.log(req.query)
 
     // console.log(limit, offset, search, category);
@@ -81,7 +82,8 @@ export const getAllCourses = async (req, res) => {
         limit,
         offset,
         sortBy,
-        sortOrder
+        sortOrder,
+        userId
       });
 
       console.log('category',category);
@@ -115,12 +117,13 @@ export const getAllCourse = async(req,res) => {
   try {
 
     const courses = await Course.find({isDeleted:false}).populate('category');
+    const totalCount  = await Course.countDocuments({isDeleted:false})
 
-    if(!courses) {
+    if(!courses || !courses.length === 0) {
       return res.status(404).json({message:'no courses found'})
     }
 
-    res.status(200).json({message:'All courses found',courses})
+    res.status(200).json({message:'All courses found',courses,totalCount})
     
   } catch (error) {
     res.status(500).json({message:'internal server error occured in get all course api'})
