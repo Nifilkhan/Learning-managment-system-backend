@@ -21,15 +21,17 @@ export const createSession = async(req,res) => {
 export const verifyPayment = async(req,res) => {
     try {
         const {sessionId} = req.params;
+        console.log('session id received in the verify payment controller',sessionId)
 
         if(!sessionId) {
             return res.status(400).json({ message: "Session ID is required" });
         }
         const result = await paymentConfirm(sessionId);
+        console.log('result from the verify payment controller',result)
         console.log('verificaction result from the verify payment controller',result)
-        if (result.success === true) {
-            return res.status(200).json({ message: "Payment verified & courses unlocked successfully" });
-        } else if(result.success === false) {
+        if (result.success) {
+            return res.status(200).json({results:result});
+        } else {
             return res.status(400).json({ message: "Payment verification failed" });
         }
     } catch (error) {

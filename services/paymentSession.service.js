@@ -60,7 +60,7 @@ export const paymentConfirm = async(sessionId) => {
 
         if(session.payment_status === 'paid') {
             const userId = session.metadata.userId;
-            const courseIds = JSON.parse(session.metadata.courseIds || '[]');
+            const courseIds = JSON.parse(session.metadata.courseIds);
     
             await Enrollment.findOneAndUpdate(
                 {userId},

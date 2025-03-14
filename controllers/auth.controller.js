@@ -28,7 +28,7 @@ export const signup = async(req,res) => {
         const existingUser = await User.findOne({ email })
 
         if(existingUser){
-            return res.status(401).json({message:'Email already exists'})
+            return res.status(400).json({message:'Email already exists'})
         }
 
         const hashedPassword = await bcrypt.hash(password,10);
@@ -100,7 +100,7 @@ export const signin = async(req,res) => {
             const isPasswordValide = await bcrypt.compare(password,admin.password);
 
             if(!isPasswordValide) {
-                return res.status(401).json({message:'password is invalid'})
+                return res.status(400).json({message:'password is invalid'})
             }
 
             const adminToken = jwt.sign(
@@ -113,7 +113,7 @@ export const signin = async(req,res) => {
                 }
             );
             // console.log('Admin token',adminToken)
-            res.cookie('adminLoggedIn', true, {
+            res.cookie('adminLoggedIn', adminToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Secure cookie in production
                 maxAge: 4 * 60 * 60 * 1000, // 4 hours expiration
@@ -122,6 +122,9 @@ export const signin = async(req,res) => {
             return res.status(200).json({role:'admin',message:'Admin logged in succesfully'})
         }
     const user = await User.findOne({email}).select('+password');
+    if(!user)                              {
+        return res.status(400).json({message:'Email or password is not correct'})
+    }
     console.log(user)
 
     // if(!user) {
@@ -133,7 +136,7 @@ export const signin = async(req,res) => {
     }
     const isPasswordValid = await bcrypt.compare(password,user.password);
     if(!isPasswordValid){
-        return res.status(401).json({message:'Invalid password'})
+        return res.status(400).json({message:'Invalid password'})
     }
 
     //jwt creation
