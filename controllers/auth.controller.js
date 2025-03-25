@@ -243,6 +243,7 @@ export const getUser = async(req,res) => {
        
         // console.log(req.userId)
         const user = await getUserById(req.userId);
+        console.log(user)
 
         // console.log('user from the controller verified',user)
 
@@ -252,10 +253,12 @@ export const getUser = async(req,res) => {
           }
 
           const totalCoursesPurchased = await getTotalCourses(req.userId)
+          console.log(totalCoursesPurchased)
 
-          res.status(200).json({user})
+          res.status(200).json({user,totalCoursesPurchased})
         //   console.log('response user:',user)
     } catch (error) {
+        console.log(error)
         res.status(500).json({message:'Internal error occured in get user'})
     }
 }
