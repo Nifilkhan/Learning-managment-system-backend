@@ -123,10 +123,29 @@ export const getLecture = async (req, res) => {
   }
 };
 
+
+export const deleteLecture = async (req, res) => {
+  try {
+    const { lectureId } = req.params;
+    
+    console.log("lecture id from params", req.params);
+    
+    const lecture = await softDeleteLecture(lectureId);
+    // console.log('deleted lecture in the controller',lecture)
+    res.status(200).json({ message: "Lecture deleted succesfully", lecture });
+  } catch (error) {
+    throw new error("Error occured while deleting the lecture");
+  }
+};
+
 export const getLectures = async (req, res) => {
   try {
     console.log("Received userId:", req.userId); // ✅ Debugging log
+    console.log("Received user role",req.role || req.user?.role);
+
+
     const userId = req.userId;
+    const userRole = req.role || req.user?.role;
     const { sectionId } = req.params;
 
     if (!sectionId) {
@@ -144,6 +163,10 @@ export const getLectures = async (req, res) => {
     }
 
     const courseId = section.courseId;
+
+    if(userRole === 'admin'){
+      return res.status(200).json({message:'Lecture received for admin',lectures})
+    }
 
     console.log("Fetching enrollment for userId:", userId); // ✅ Debugging log
     const enrollment = await Enrollment.findOne({ userId });
@@ -187,19 +210,5 @@ export const getLectures = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error occurred while getting the lectures" });
-  }
-};
-
-export const deleteLecture = async (req, res) => {
-  try {
-    const { lectureId } = req.params;
-
-    console.log("lecture id from params", req.params);
-
-    const lecture = await softDeleteLecture(lectureId);
-    // console.log('deleted lecture in the controller',lecture)
-    res.status(200).json({ message: "Lecture deleted succesfully", lecture });
-  } catch (error) {
-    throw new error("Error occured while deleting the lecture");
   }
 };

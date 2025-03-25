@@ -6,7 +6,7 @@ export const purchasedCourse = async(req,res) => {
         const purchased = await purchasedCourseService(userId);
 
         if(!purchased || purchased.length === 0) {
-            return res.status(401).json({message:'NO courses found for this user'})
+            return res.status(200).json({message:'NO courses found for this user'})
         }
 
         res.status(200).json({message:'purchased courses list',purchased})

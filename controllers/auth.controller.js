@@ -5,7 +5,7 @@ import { generateOTP } from "../utils/otp.js";
 import transport from "../middleware/send.mail.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
-import { getUserCount, getVerifiedUsers } from "../services/userCount.service.js";
+import { getTotalCourses, getUserCount, getVerifiedUsers } from "../services/userCount.service.js";
 import Admin from "../models/admin.model.js";
 import { getUserById } from "../services/user.service.js";
 import passport from "passport";
@@ -112,14 +112,14 @@ export const signin = async(req,res) => {
                     expiresIn: '4h', // Set token expiration
                 }
             );
-            // console.log('Admin token',adminToken)
+            console.log('Admin token',adminToken)
             res.cookie('adminLoggedIn', adminToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Secure cookie in production
                 maxAge: 4 * 60 * 60 * 1000, // 4 hours expiration
                 sameSite: 'lax',
             });
-            return res.status(200).json({role:'admin',message:'Admin logged in succesfully'})
+            return res.status(200).json({role:'admin',message:'Admin logged in succesfully'.adminToken})
         }
     const user = await User.findOne({email}).select('+password');
     if(!user)                              {
@@ -250,6 +250,8 @@ export const getUser = async(req,res) => {
         if (!user) {
             return res.status(401).json({ message: "User not found" });
           }
+
+          const totalCoursesPurchased = await getTotalCourses(req.userId)
 
           res.status(200).json({user})
         //   console.log('response user:',user)
