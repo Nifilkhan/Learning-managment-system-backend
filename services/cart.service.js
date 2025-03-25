@@ -8,7 +8,7 @@ export const addCartService = async(userId,courseId) => {
         }
 
         let cart = await Cart.findOne({userId: new mongoose.Types.ObjectId(userId)});
-        console.log('cart from the service file',cart);
+        console.log('cart from the service file add',cart);
         if(!cart) {
             cart = new Cart ({ userId: new mongoose.Types.ObjectId(userId), items: [new mongoose.Types.ObjectId(courseId)] });
         } else {
@@ -28,9 +28,8 @@ export const addCartService = async(userId,courseId) => {
 export const getCartItemsService = async(userId) => {
     try {
         const cart  = await Cart.findOne({userId}).populate('items');
-        console.log('cart from the service file',cart);
-        if(!cart) throw new Error('no items found in the cart');
-        return cart;
+        console.log('cart from the service file get',cart);
+        return cart || {userId,items:[]};
     } catch (error) {
         throw new Error(error.message)
     }
@@ -42,7 +41,7 @@ export const removeFromCartSevice = async(userId,courseId) => {
         {$pull:{items:courseId}},
         {new:true}
     ).populate("items");
-    console.log('cart from the service file',cart)
+    console.log('cart from the service file rm',cart)
 
     if(!cart) throw new Error('cart not found');
     return cart;
